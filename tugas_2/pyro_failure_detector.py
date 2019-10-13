@@ -11,7 +11,8 @@ class PyroFailureDetector(failure_detector.FailureDetector):
         try:
             proxy = Pyro4.Proxy(host)
             proxy.OnNotify(self.identifier)
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def Ping(self, host):

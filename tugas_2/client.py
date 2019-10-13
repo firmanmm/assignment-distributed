@@ -25,10 +25,10 @@ class Client:
 
 class FileManagerClient:
 
-    def __init__(self, client):
+    def __init__(self, client, remoteObj):
         workDir = os.getcwd()
         self.client = client
-        self.fileManager = self.client.GetObject("FileServer")
+        self.fileManager = self.client.GetObject(remoteObj)
         self.workDir = "%s/client" % (workDir)
         os.makedirs(self.workDir, exist_ok=True)
 

@@ -9,7 +9,7 @@ class Listener:
         self.seq = 0
         self.deltaTime = deltaTime
         self.onChange = onChange
-        self.status = "OFFLINE"
+        self.status = "ONLINE"
         self.Refresh()
 
     def Refresh(self):
@@ -18,7 +18,7 @@ class Listener:
     def Check(self):
         referenceTime = datetime.datetime.now().__add__(-self.deltaTime * 2)
         isStatusChange = False
-        if self.lastBeat.timestamp() < referenceTime:
+        if self.lastBeat.timestamp() < referenceTime.timestamp():
             if self.status != "OFFLINE":
                 self.status = "OFFLINE"
                 isStatusChange = True
@@ -29,7 +29,7 @@ class Listener:
 
         if isStatusChange:
             if self.onChange is not None:
-                self.onChange(self.host, self.status)
+                self.onChange(self.status)
     
     def GetStatus(self):
         return self.status
@@ -68,5 +68,5 @@ class FailureDetector:
         time.sleep(sleepTime)
         while True:
             time.sleep(sleepTime)
-            for listener in self.listener.items():
-                listener.Check()
+            for listener in self.listener:
+                self.listener[listener].Check()
