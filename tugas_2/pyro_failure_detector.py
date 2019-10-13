@@ -7,10 +7,10 @@ class PyroFailureDetector(failure_detector.FailureDetector):
         super().__init__(deltaTime)
         self.identifier = identifier
 
-    def Notify(self, host):
+    def Notify(self, host, sequence):
         try:
             proxy = Pyro4.Proxy(host)
-            proxy.OnNotify(self.identifier)
+            proxy.OnNotify(self.identifier, sequence)
         except Exception as e:
             pass
 

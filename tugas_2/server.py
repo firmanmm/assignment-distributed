@@ -100,5 +100,5 @@ class FailureDetectorServer(failure_detector.PyroFailureDetector):
     def Ack(self):
         return super().Ack()
     
-    def OnNotify(self, host):
-        return super().OnNotify(host)
+    def OnNotify(self, host, sequence):
+        return super().OnNotify(host, sequence)

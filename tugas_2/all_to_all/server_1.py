@@ -15,6 +15,6 @@ if __name__ == '__main__':
     failureDetectorServer = server.FailureDetectorServer(datetime.timedelta(seconds=5), broadcastTargets=broadcastTargets, identifier="FS1-FileServer")
     fileClient = listener.Listener("CL-FileClient")
     fileServer2 = listener.Listener("FS2-FileServer")
-    failureDetectorServer.AddListener(fileClient.GetIdentifier(), fileClient.OnChange)
-    failureDetectorServer.AddListener(fileServer2.GetIdentifier(), fileServer2.OnChange)
+    failureDetectorServer.AddListener(fileClient.GetIdentifier(), fileClient.OnChange, fileClient.OnRecover)
+    failureDetectorServer.AddListener(fileServer2.GetIdentifier(), fileServer2.OnChange, fileServer2.OnRecover)
     pyroServer.Start([fileSever, failureDetectorServer])

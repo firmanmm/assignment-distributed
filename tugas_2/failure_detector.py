@@ -4,16 +4,23 @@ import time
 import typing
 
 class Listener:
-    def __init__(self, host: str, deltaTime: datetime.timedelta, onChange = None):
+    def __init__(self, host: str, deltaTime: datetime.timedelta, onChange = None, onRecover = None):
+        self.sequence = 0
         self.host = host
         self.seq = 0
         self.deltaTime = deltaTime
         self.onChange = onChange
+        self.onRecover = onRecover
         self.status = "ONLINE"
-        self.Refresh()
-
-    def Refresh(self):
         self.lastBeat = datetime.datetime.now()
+
+    def Refresh(self, sequence):
+        self.lastBeat = datetime.datetime.now()
+        if self.sequence > sequence:
+            if self.onRecover is not None:
+                self.onRecover()
+        self.sequence = sequence + 1
+
     
     def Check(self):
         referenceTime = datetime.datetime.now().__add__(-self.deltaTime * 2)
@@ -38,15 +45,17 @@ class FailureDetector:
     def __init__(self, deltaTime: datetime.timedelta):
         self.listener: typing.Dict[str, Listener] = dict()
         self.deltaTime = deltaTime
+        self.sequence = 0
 
     def Broadcast(self, targets):
         for target in targets:
-            self.Notify(target)
+            self.Notify(target, self.sequence)
+        self.sequence += 1
 
-    def AddListener(self, host, onChange=None):
-        self.listener[host] = Listener(host, self.deltaTime, onChange)
+    def AddListener(self, host, onChange=None, onRecover=None):
+        self.listener[host] = Listener(host, self.deltaTime, onChange, onRecover)
 
-    def Notify(self, host):
+    def Notify(self, host, sequence):
         raise Exception("Not implemented")
 
     def Ping(self, host):
@@ -55,8 +64,8 @@ class FailureDetector:
     def Ack(self):
         return "OK"
 
-    def OnNotify(self, host):
-        self.listener[host].Refresh()
+    def OnNotify(self, host, sequence):
+        self.listener[host].Refresh(sequence)
 
     def __run__daemon__(self):
         thread = threading.Thread(target=self.__daemon__)

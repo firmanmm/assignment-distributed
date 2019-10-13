@@ -18,8 +18,8 @@ if __name__ == '__main__':
     failureDetectorServer = server.FailureDetectorServer(datetime.timedelta(seconds=5), identifier="CL-FileClient", broadcastTargets=broadcastTargets)
     fileServer1 = listener.Listener("FS1-FileServer")
     fileServer2 = listener.Listener("FS2-FileServer")
-    failureDetectorServer.AddListener(fileServer1.GetIdentifier(), fileServer1.OnChange)
-    failureDetectorServer.AddListener(fileServer2.GetIdentifier(), fileServer2.OnChange)
+    failureDetectorServer.AddListener(fileServer1.GetIdentifier(), fileServer1.OnChange, fileServer1.OnRecover)
+    failureDetectorServer.AddListener(fileServer2.GetIdentifier(), fileServer2.OnChange, fileServer2.OnRecover)
     fileManager = client.FileManagerClient(clientHandler, "FS1-FileServer")
     thread = threading.Thread(target=pyroServer.Start, args=([failureDetectorServer],))
     thread.daemon = True
