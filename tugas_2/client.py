@@ -2,28 +2,32 @@ import Pyro4
 import os
 import json
 import base64
+import ping_ack.server as detector
+import datetime
+
 
 class Client:
-    def __init__(self, host, port, identifier="main-"):
+    def __init__(self, host, port):
         self.host = host
         self.port = port
-        self.identifier = identifier
         self.objects = dict()
 
     def Start(self, remoteObject):
         for obj in remoteObject:
-            url = "PYRONAME:%s%s@%s:%d" % (self.identifier, obj, self.host, self.port)
+            url = self.constructURI(obj)
             self.objects[obj] = Pyro4.Proxy(url)
+
+    def constructURI(self, obj):
+        return "PYRONAME:%s@%s:%d" % (obj, self.host, self.port)
 
     def GetObject(self, name):
         return self.objects[name]
 
 class FileManagerClient:
 
-    def __init__(self, host, port, identifier="main-"):
+    def __init__(self, client):
         workDir = os.getcwd()
-        self.client = Client(host, port, identifier)
-        self.client.Start(["FileServer"])
+        self.client = client
         self.fileManager = self.client.GetObject("FileServer")
         self.workDir = "%s/client" % (workDir)
         os.makedirs(self.workDir, exist_ok=True)
@@ -108,8 +112,3 @@ class FileManagerClient:
     def handleError(self, response):
         if type(response) is dict and "error" in response:
             raise Exception(response["error"])
-
-
-if __name__ == '__main__':
-    client = FileManagerClient("localhost", 7777)
-    client.RunCLI()
