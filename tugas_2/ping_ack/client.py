@@ -11,7 +11,7 @@ import server as detector
 if __name__ == '__main__':
     clientHandler = client.Client("localhost", 7777)
     clientHandler.Start(["FileServer"])
-    fileManager = client.FileManagerClient(client)
+    fileManager = client.FileManagerClient(clientHandler)
     interval = datetime.timedelta(seconds=5)
     pingTargets = [
         clientHandler.constructURI("FailureDetectorServer")

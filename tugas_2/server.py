@@ -20,6 +20,7 @@ class Server:
             Pyro4.expose(obj.__class__)
             objAddress = daemon.register(obj)
             ns.register("%s%s" % (self.identifier, type(obj).__name__), objAddress)
+        print("Listen and Serve")
         daemon.requestLoop()
 
 class FileServer:
@@ -73,6 +74,7 @@ class FileServer:
             "error": str(err)
         }
 
+@Pyro4.expose
 class FailureDetectorServer(failure_detector.PyroFailureDetector):
     def __init__(self, deltaTime: datetime.timedelta, identifier = "MAIN-FD", broadcastTargets=[], pingTargets=[]):
         self.broadcastTargets = broadcastTargets
@@ -81,10 +83,12 @@ class FailureDetectorServer(failure_detector.PyroFailureDetector):
         super().__init__(identifier, deltaTime)
         self.__run__daemon__()
         thread = threading.Thread(target=self.__check__daemon__)
-        thread.run()
+        thread.daemon = True
+        thread.start()
 
     def __check__daemon__(self):
-        sleepDuration = self.deltaTime.microseconds / 1000.0
+        print("Daemon is running")
+        sleepDuration = self.deltaTime.total_seconds()
         while True:
             time.sleep(sleepDuration)
             self.Broadcast(self.broadcastTargets)
@@ -93,3 +97,8 @@ class FailureDetectorServer(failure_detector.PyroFailureDetector):
                 if not self.Ping(target):
                     print("[%s][PING] Service %s is down!" % (currentTime.strftime("%m/%d/%Y, %H:%M:%S"),target))
                 
+    def Ack(self):
+        return super().Ack()
+    
+    def OnNotify(self, host):
+        return super().OnNotify(host)

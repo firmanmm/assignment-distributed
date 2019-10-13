@@ -60,11 +60,13 @@ class FailureDetector:
 
     def __run__daemon__(self):
         thread = threading.Thread(target=self.__daemon__)
-        thread.run()
+        thread.daemon = True
+        thread.start()
 
     def __daemon__(self):
-        time.sleep(self.deltaTime.microseconds / 1000.0)
+        sleepTime = self.deltaTime.total_seconds()
+        time.sleep(sleepTime)
         while True:
-            time.sleep(self.deltaTime.microseconds / 1000.0)
+            time.sleep(sleepTime)
             for listener in self.listener.items():
                 listener.Check()
