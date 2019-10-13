@@ -37,9 +37,9 @@ Please run it from current directory since this python project utilitize python 
 
 #### All to All
 1. Run `pyro4-ns -n localhost -p 7777`
-2. Run `python -m centralized.server_1`
-3. Run `python -m centralized.server_2`
-4. Run `python -m centralized.client`
+2. Run `python -m all_to_all.server_1`
+3. Run `python -m all_to_all.server_2`
+4. Run `python -m all_to_all.client`
 
 ### Commands
 
