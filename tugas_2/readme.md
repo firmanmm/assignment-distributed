@@ -11,16 +11,35 @@ Create a remote file server with capabilities of
 3. Delete file
 4. Update file
 5. List file
+6. Able to detect failure with Ping - ACK
+7. Able to detect failure with Centralized Hearthbeat
+8. Able to detect failure with All to All Hearthbeat
 
-Client will connect to remote server using Pyro 4 library and perform remote execution
+
+Client will connect to remote server using Pyro 4 library and perform remote execution. Heartbeat down detection is utilizing time since last beat instead of sequence number for better accuracy.
 
 ## Usage
 
 ### Running
+Please run it from current directory since this python project utilitize python module.
 
+#### Ping-ACK
 1. Run `pyro4-ns -n localhost -p 7777`
-2. Run `python server.py`
-3. Run `python client.py`
+2. Run `python -m ping_ack.server`
+3. Run `python -m ping_ack.client`
+
+#### Centralized
+1. Run `pyro4-ns -n localhost -p 7777`
+2. Run `python -m centralized.central`
+3. Run `python -m centralized.server_1`
+4. Run `python -m centralized.server_2`
+5. Run `python -m centralized.client`
+
+#### All to All
+1. Run `pyro4-ns -n localhost -p 7777`
+2. Run `python -m centralized.server_1`
+3. Run `python -m centralized.server_2`
+4. Run `python -m centralized.client`
 
 ### Commands
 

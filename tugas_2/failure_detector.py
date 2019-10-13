@@ -64,7 +64,7 @@ class FailureDetector:
         thread.start()
 
     def __daemon__(self):
-        sleepTime = self.deltaTime.total_seconds()
+        sleepTime = 1.0
         time.sleep(sleepTime)
         while True:
             time.sleep(sleepTime)
