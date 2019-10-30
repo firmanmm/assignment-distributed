@@ -16,7 +16,7 @@ Create a remote file server with capabilities of
 8. Able to detect failure with All to All Hearthbeat
 
 
-Client will connect to remote server using Pyro 4 library and perform remote execution. Heartbeat down detection is utilizing time since last beat instead of sequence number for better accuracy.
+Client will connect to remote server using Pyro 4 library and perform remote execution. Heartbeat down detection is utilizing time since last beat while server restart detection utilizing sequence number.
 
 ## Usage
 
