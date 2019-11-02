@@ -4,14 +4,15 @@ import json
 import base64
 
 class Client:
-    def __init__(self, host, port):
+    def __init__(self, host, port, identifier = "main-"):
         self.host = host
         self.port = port
+        self.identifier = identifier
         self.objects = dict()
 
     def Start(self, remoteObject):
         for obj in remoteObject:
-            url = "PYRONAME:%s@%s:%d" % (obj, self.host, self.port)
+            url = "PYRONAME:%s%s@%s:%d" % (self.identifier, obj, self.host, self.port)
             self.objects[obj] = Pyro4.Proxy(url)
 
     def GetObject(self, name):

@@ -29,6 +29,7 @@ class FileServer:
         for server in syncServer:
             url = "PYRONAME:%s@%s:%d" % (server, host, port)
             self.syncServer.append(Pyro4.Proxy(url))
+        self.Sync()
 
 
     def Start(self):
@@ -127,6 +128,23 @@ class FileServer:
         for server in self.syncServer:
             try:
                 server.ReleaseLock(key)
+            except:
+                pass
+
+    def Sync(self):
+        localFile = self.List()
+        for server in self.syncServer:
+            try:
+                remoteFileList = server.List()
+                for lFile in localFile:
+                    if lFile not in remoteFileList:
+                        self.Delete(lFile, False)
+                localFile = self.List()
+                for rFile in remoteFileList:
+                    if rFile not in localFile:
+                        fileData = server.Get(rFile)
+                        self.Store(rFile, fileData, False)
+                break
             except:
                 pass
 
